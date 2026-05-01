@@ -1,5 +1,7 @@
 # OpenCode Path Fixer
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Chrome 扩展，自动修复 OpenCode 在 Windows 上的路径分隔符问题。
 
 ## 问题
