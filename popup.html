@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 260px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 13px;
+      color: #333;
+      background: #fafafa;
+    }
+    h1 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+    .status {
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    .status.active {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .info {
+      font-size: 11px;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .info code {
+      background: #eee;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    .how-it-works {
+      font-size: 11px;
+      color: #888;
+      line-height: 1.5;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+    .how-it-works strong {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>OpenCode Path Fixer</h1>
+
+  <div class="status active">
+    Auto-fix enabled
+  </div>
+
+  <div class="info">
+    This extension automatically fixes Windows backslash paths in OpenCode web sessions.<br><br>
+    Converts <code>C:\path\to\file</code> to <code>C:/path/to/file</code> for proper session matching.
+  </div>
+
+  <div class="how-it-works">
+    <strong>How it works:</strong> Paths are automatically normalized when the OpenCode page loads. No manual action needed.<br><br>
+    If paths were fixed, you'll see a green notification in the bottom-right corner of the OpenCode page.
+  </div>
+</body>
+</html>
