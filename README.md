@@ -58,6 +58,15 @@ applyFixes(fixes) → void
 | `C:\\Projects\\MyApp` | `C:\\Projects\\MyApp` | 双反斜杠（正确格式，不变）|
 | `C:\\\\Projects\\\\MyApp` | `C:\\Projects\\MyApp` | 四反斜杠缩减为双 |
 
+## 更新记录
+
+### v1.0.1
+- Apply 后自动刷新页面使修改生效
+- 切换项目时（URL 变化）自动触发路径检查
+
+### v1.0.0
+- 初始版本
+
 ## 开发
 
 ### 单元测试

@@ -93,6 +93,7 @@
       applyFixes(fixes);
       panel.remove();
       showSuccessTip(fixes.length);
+      setTimeout(() => location.reload(), 500);
     };
 
     const cancelBtn = document.createElement('button');
@@ -148,6 +149,32 @@
     }
   }
 
+  let lastUrl = '';
+  function watchForProjectSwitch() {
+    lastUrl = location.href;
+
+    const checkUrlChange = () => {
+      if (location.href !== lastUrl) {
+        lastUrl = location.href;
+        setTimeout(checkStorage, 1000);
+      }
+    };
+
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+    history.pushState = function() {
+      originalPushState.apply(history, arguments);
+      checkUrlChange();
+    };
+    history.replaceState = function() {
+      originalReplaceState.apply(history, arguments);
+      checkUrlChange();
+    };
+    window.addEventListener('popstate', checkUrlChange);
+
+    setInterval(checkUrlChange, 500);
+  }
+
   function init() {
     console.log('[Path Fixer] Loaded');
     if (!/Win(dows|NT)/i.test(navigator.userAgent) && !/Win(dows|NT)/i.test(navigator.platform)) {
@@ -155,6 +182,7 @@
       return;
     }
     setTimeout(checkStorage, 2000);
+    watchForProjectSwitch();
   }
 
   if (document.readyState === 'loading') {
