@@ -175,10 +175,20 @@
     setInterval(checkUrlChange, 500);
   }
 
+  function hasWindowsPathPattern() {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key || !key.startsWith('opencode.global.')) continue;
+      const value = localStorage.getItem(key);
+      if (value && /[A-Za-z]:[\\\/]/.test(value)) return true;
+    }
+    return false;
+  }
+
   function init() {
     console.log('[Path Fixer] Loaded');
-    if (!/Win(dows|NT)/i.test(navigator.userAgent) && !/Win(dows|NT)/i.test(navigator.platform)) {
-      console.log('[Path Fixer] Not Windows, skipping');
+    if (!hasWindowsPathPattern()) {
+      console.log('[Path Fixer] No Windows path pattern found, skipping');
       return;
     }
     setTimeout(checkStorage, 2000);
