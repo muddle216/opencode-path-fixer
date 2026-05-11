@@ -2,13 +2,29 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Chrome 扩展，自动修复 OpenCode 在 Windows 上的路径分隔符问题。
+Chrome/Edge 扩展，修复 OpenCode 连接 Windows 服务器时的路径分隔符问题。适用于桌面和移动浏览器。
 
 ## 问题
 
-Windows 本地路径格式为 `C:\Projects\MyApp`，存储到 localStorage 时 JSON 转义后变成 `C:\\Projects\\MyApp`。
-但如果路径分隔符处理异常，localStorage 可能存储为 `C:\\\\Projects\\\\MyApp`（过度转义），
-导致 OpenCode 解析路径后找不到对应的 session。
+OpenCode 服务端运行在 Windows 服务器上时，用户在浏览器（桌面或手机）中操作 OpenCode，路径信息会存储在浏览器的 localStorage 中。
+
+Windows 本地路径格式为 `C:\Projects\MyApp`，存储到 localStorage 时 JSON 转义后变成 `C:\\Projects\\MyApp`。如果路径分隔符处理异常，可能存储为 `C:\\\\Projects\\\\MyApp`（过度转义），导致 OpenCode 解析路径后找不到对应的 session。
+
+## 场景
+
+```
+┌─────────────┐      HTTP       ┌─────────────────┐
+│  手机/电脑   │  ──────────►   │  OpenCode Server │
+│  浏览器      │  ◄──────────   │  (Windows)       │
+│             │                 │                  │
+│ localStorage│◄─ 存储Windows路径 ──│                  │
+└─────────────┘                 └─────────────────┘
+                                         │
+                                         ▼
+                              path-utils.js 修复路径格式
+```
+
+无论你用什么设备、什么浏览器访问 Windows 服务器上的 OpenCode，都可能遇到路径格式问题，都可以使用此扩展修复。
 
 ## 功能
 
@@ -79,10 +95,21 @@ node path-utils.js
 
 ### 加载扩展
 
-1. 打开 Chrome `chrome://extensions/`
+#### Chrome / Edge 桌面版
+
+1. 打开 `chrome://extensions/` 或 `edge://extensions/`
 2. 开启"开发者模式"
 3. 点击"加载已解压的扩展程序"
 4. 选择 `opencode-path-fixer/` 目录
+
+#### Edge Android (实验性)
+
+1. 下载 Edge Canary 版本
+2. 打开 `edge://flags`，搜索 "Android Extension" 或 "Extensions" 相关选项并启用
+3. 重启浏览器
+4. 通过 Edge Add-ons 商店安装，或在 `edge://extensions` 中通过 ID 安装
+
+> 注：具体 flag 名称随版本变化，可能是 "Android Extension Search"、"Android Extensions v2" 等，以实际页面搜索结果为准。
 
 ### 配置
 

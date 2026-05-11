@@ -2,7 +2,12 @@
   "manifest_version": 3,
   "name": "OpenCode Path Fixer",
   "version": "1.0.0",
-  "description": "Automatically fixes Windows backslash paths in OpenCode web sessions",
+  "description": "Fixes Windows path separator issues when connecting to OpenCode servers from any browser (desktop or mobile)",
+  "icons": {
+    "64": "icons/icon-64.png",
+    "128": "icons/icon-128.png"
+  },
+  "privacy_policy_url": "https://github.com/muddle216/opencode-path-fixer/blob/main/privacy.html",
   "permissions": [],
   "host_permissions": ["*://*/*"],
   "content_scripts": [{
