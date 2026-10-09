@@ -10,6 +10,8 @@ OpenCode 服务端运行在 Windows 服务器上时，用户在浏览器（桌�
 
 Windows 本地路径格式为 `C:\Projects\MyApp`，存储到 localStorage 时 JSON 转义后变成 `C:\\Projects\\MyApp`。如果路径分隔符处理异常，可能存储为 `C:\\\\Projects\\\\MyApp`（过度转义），导致 OpenCode 解析路径后找不到对应的 session。
 
+另一个常见问题是**盘符大小写不一致**：OpenCode 前端做路径匹配时区分大小写，服务端返回的目录通常是 `D:\Projects\MyApp`（大写盘符），而 localStorage 里可能存成 `d:\Projects\MyApp`（小写盘符）。两者在 Windows 上等价，但 OpenCode 会认为不匹配，导致该目录下的 session 不显示（接口能返回 session，界面却为空）。
+
 ## 场景
 
 ```
@@ -30,6 +32,7 @@ Windows 本地路径格式为 `C:\Projects\MyApp`，存储到 localStorage 时 J
 
 - 扫描 `opencode.global.*` 开头所有 localStorage key
 - 检测并修复所有异常路径格式（`a/b`、`a\b`、`a\\\\b` → `a\\b`）
+- 盘符统一为大写（`d:\Projects\MyApp` → `D:\Projects\MyApp`），修复盘符大小写不一致导致 session 不显示的问题
 - 显示修复清单，用户确认后生效
 - 纯函数实现，便于单元测试
 
@@ -53,8 +56,12 @@ isWindowsPath(str) → boolean
 // 判断内容是否跳过（非路径内容）
 shouldSkip(content) → boolean
 
-// 路径格式化：统一成双反斜杠格式
-// a\b, a/b, a\\\\b → a\\b
+// 盘符统一大写（只改盘符，不动盘符之后的目录大小写）
+// d:\Projects\MyApp → D:\Projects\MyApp
+normalizeDriveLetter(path) → string
+
+// 路径格式化：统一成大写盘符 + 双反斜杠格式
+// a\b, a/b, a\\\\b → a\\b；d:\Projects → D:\Projects
 normalizePath(path) → string
 
 // 修复 JSON 中的所有路径
@@ -75,8 +82,14 @@ applyFixes(fixes) → void
 | `C:\Projects\MyApp` | `C:\\Projects\\MyApp` | 单反斜杠转双 |
 | `C:\\Projects\\MyApp` | `C:\\Projects\\MyApp` | 双反斜杠（正确格式，不变）|
 | `C:\\\\Projects\\\\MyApp` | `C:\\Projects\\MyApp` | 四反斜杠缩减为双 |
+| `d:\Projects\MyApp` | `D:\Projects\MyApp` | 盘符统一为大写 |
 
 ## 更新记录
+
+### v1.1.0
+- 新增盘符大小写归一化：`d:\Projects\MyApp` → `D:\Projects\MyApp`
+- 修复 localStorage 中小写盘符匹配不到服务端大写盘符目录、导致 session 不显示的问题
+- 仅归一化盘符大小写，不改动盘符之后的目录大小写
 
 ### v1.0.1
 - Apply 后自动刷新页面使修改生效

@@ -17,19 +17,33 @@ function shouldSkip(content) {
          lower.includes('content');
 }
 
-// 路径格式化：统一成双反斜杠格式
-// a\b -> a\\b, a/b -> a\\b, a\\\\b -> a\\b
+// 盘符统一为大写：Windows 认为盘符大小写等价，但 opencode 前端匹配路径是大小写敏感的，
+// 小写盘符（d:\proj\sg）匹配不到服务端返回的大写盘符目录（D:\proj\sg），会导致 session 不显示。
+// 只改盘符，不影响盘符之后的目录大小写。
+function normalizeDriveLetter(path) {
+  if (!path || typeof path !== 'string') return path;
+  if (/^[a-z]:/.test(path)) {
+    return path[0].toUpperCase() + path.slice(1);
+  }
+  return path;
+}
+
+// 路径格式化：统一成大写盘符 + 双反斜杠格式
+// a\b -> a\\b, a/b -> a\\b, a\\\\b -> a\\b, d:\p -> D:\p
 function normalizePath(path) {
   if (!path || typeof path !== 'string') return path;
   if (!isWindowsPath(path)) return path;
   if (shouldSkip(path)) return path;
 
-  // 第一步：正斜杠转成反斜杠
+  // 第一步：盘符统一大写
+  path = normalizeDriveLetter(path);
+
+  // 第二步：正斜杠转成反斜杠
   if (path.includes('/')) {
     path = path.replace(/\//g, '\\\\');
   }
 
-  // 第二步：超过2个反斜杠字符则缩减
+  // 第三步：超过2个反斜杠字符则缩减
   const bsCount = (path.match(/\\/g) || []).length;
   if (bsCount > 2) {
     return path.replace(/\\\\+/g, '\\\\');
@@ -103,6 +117,7 @@ if (typeof window !== 'undefined') {
   window.PathFixer = {
     isWindowsPath,
     shouldSkip,
+    normalizeDriveLetter,
     normalizePath,
     fixJsonPaths,
     scanLocalStorage,
@@ -115,6 +130,7 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     isWindowsPath,
     shouldSkip,
+    normalizeDriveLetter,
     normalizePath,
     fixJsonPaths,
     scanLocalStorage,

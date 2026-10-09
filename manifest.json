@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "OpenCode Path Fixer",
-  "version": "1.0.0",
-  "description": "Fixes Windows path separator issues when connecting to OpenCode servers from any browser (desktop or mobile)",
+  "version": "1.1.0",
+  "description": "Fixes Windows path separator and drive-letter case issues when connecting to OpenCode servers from any browser (desktop or mobile)",
   "icons": {
     "64": "icons/icon-64.png",
     "128": "icons/icon-128.png"
